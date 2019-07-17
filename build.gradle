@@ -1,0 +1,11 @@
+plugins { id 'java'}
+
+repositories {
+	jcenter()
+}
+
+dependencies {
+	implementation 'org.slf4j:slf4j-api:1.7.21'
+	implementation 'com.marklogic:marklogic-client-api:4.2.0'
+}
+
