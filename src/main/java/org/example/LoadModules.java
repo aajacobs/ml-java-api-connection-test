@@ -1,4 +1,4 @@
-package com.example;
+package org.example;
 
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.DatabaseClientFactory;
@@ -18,12 +18,16 @@ import java.nio.file.attribute.BasicFileAttributes;
 public class LoadModules {
 
 	public static void main(String[] args) throws Exception {
-		String host = "localhost";
-		int port = 8000;
-		String username = "admin";
-		String password = "admin";
+		String host = args[0];
+		int port = Integer.parseInt(args[1]);
+		String username = args[2];
+		String password = args[3];
+		String database = args[4];
 
-		DatabaseClient client = DatabaseClientFactory.newClient(host, port,
+		final int limit = args.length == 6 ? Integer.parseInt(args[5]) : 0;
+
+		System.out.println(String.format("Connecting to %s:%d/%s as user %s", host, port, database, username));
+		DatabaseClient client = DatabaseClientFactory.newClient(host, port, database,
 			new DatabaseClientFactory.DigestAuthContext(username, password));
 
 		try {
@@ -38,8 +42,10 @@ public class LoadModules {
 
 				@Override
 				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-					System.out.println("File: " + file.toString());
-					set.add(file.toString(), new FileHandle(file.toFile()).withFormat(Format.TEXT));
+					if (limit <= 0 || set.size() < limit) {
+						System.out.println("File: " + file.toString());
+						set.add(file.toString(), new FileHandle(file.toFile()).withFormat(Format.TEXT));
+					}
 					return FileVisitResult.CONTINUE;
 				}
 

@@ -1,11 +1,18 @@
-plugins { id 'java'}
+plugins {
+	id "net.saliman.properties" version "1.4.6"
+	id "java"
+}
 
 repositories {
 	jcenter()
 }
 
 dependencies {
-	implementation 'org.slf4j:slf4j-api:1.7.21'
-	implementation 'com.marklogic:marklogic-client-api:4.2.0'
+	implementation "com.marklogic:marklogic-client-api:4.2.0"
 }
 
+task loadModules(type: JavaExec, dependsOn: compileJava) {
+	classpath = sourceSets.main.runtimeClasspath
+	main = "org.example.LoadModules"
+	args = [host, port, username, password, database, limit]
+}
